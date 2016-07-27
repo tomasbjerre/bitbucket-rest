@@ -15,35 +15,21 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain;
 
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class User {
-
-    public abstract String name();
-
-    public abstract String emailAddress();
-
-    public abstract int id();
-
-    public abstract String displayName();
-
-    public abstract boolean active();
-
-    public abstract String slug();
-
-    public abstract String type();
-
-    User() {
+public abstract class Properties {
+    Properties() {
     }
 
-    @SerializedNames({ "name", "emailAddress", "id", "displayName", "active", "slug", "type" })
-    public static User create(String name, String emailAddress, int id,
-                              String displayName, boolean active, String slug, String type) {
-        return new AutoValue_User(name, emailAddress, id, displayName, active, slug, type);
+    public abstract Integer repositoryId();
+
+    @SerializedNames({ "repositoryId" })
+    public static Properties create(Integer repositoryId) {
+        return new AutoValue_Properties(repositoryId);
     }
 }

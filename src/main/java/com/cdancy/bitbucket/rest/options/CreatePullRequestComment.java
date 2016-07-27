@@ -15,31 +15,23 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.features;
+package com.cdancy.bitbucket.rest.options;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import org.jclouds.json.SerializedNames;
 
-import org.jclouds.rest.annotations.RequestFilters;
+import com.google.auto.value.AutoValue;
 
-import se.bjurr.jmib.anotations.GenerateMethodInvocationBuilder;
+@AutoValue
+public abstract class CreatePullRequestComment {
+    CreatePullRequestComment() {
+    }
 
-import com.cdancy.bitbucket.rest.domain.system.Version;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+    public abstract String text();
 
-@GenerateMethodInvocationBuilder
-@Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
-@Path("/rest/api/{jclouds.api-version}")
-public interface SystemApi {
+    public abstract Anchor anchor();
 
-    @Named("system:version")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/application-properties")
-    @GET
-    Version version();
+    @SerializedNames({ "text", "anchor" })
+    public static CreatePullRequestComment create(String text, Anchor anchor) {
+        return new AutoValue_CreatePullRequestComment(text, anchor);
+    }
 }

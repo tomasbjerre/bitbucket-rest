@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
+import com.cdancy.bitbucket.rest.domain.User;
 import com.google.auto.value.AutoValue;
 
 @AutoValue

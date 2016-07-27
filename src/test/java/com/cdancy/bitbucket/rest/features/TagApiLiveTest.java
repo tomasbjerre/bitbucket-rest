@@ -17,15 +17,16 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
-import com.cdancy.bitbucket.rest.domain.tags.Tag;
-import com.cdancy.bitbucket.rest.options.CreateTag;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.domain.tags.Tag;
+import com.cdancy.bitbucket.rest.options.CreateTag;
 
 @Test(groups = "live", testName = "TagApiLiveTest", singleThreaded = true)
 public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -47,7 +48,7 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateTag createTag = CreateTag.create(tagName, commitHash, null);
         Tag tag = api().create(projectKey, repoKey, createTag);
         assertNotNull(tag);
-        assertTrue(tag.errors().size() == 0);
+        assertThat(tag.errors()).isEmpty();
         assertTrue(tag.id().endsWith(tagName));
         assertTrue(tag.latestCommit().equalsIgnoreCase(commitHash));
     }

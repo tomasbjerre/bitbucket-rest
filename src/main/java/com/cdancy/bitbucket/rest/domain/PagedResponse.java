@@ -15,31 +15,32 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.features;
+package com.cdancy.bitbucket.rest.domain;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.List;
 
-import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.json.SerializedNames;
 
-import se.bjurr.jmib.anotations.GenerateMethodInvocationBuilder;
+public class PagedResponse<T> {
+    private final long start;
+    private final List<T> values;
 
-import com.cdancy.bitbucket.rest.domain.system.Version;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+    public PagedResponse(List<T> values, long start) {
+        this.values = values;
+        this.start = start;
+    }
 
-@GenerateMethodInvocationBuilder
-@Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
-@Path("/rest/api/{jclouds.api-version}")
-public interface SystemApi {
+    public long getStart() {
+        return this.start;
+    }
 
-    @Named("system:version")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/application-properties")
-    @GET
-    Version version();
+    public List<T> getValues() {
+        return this.values;
+    }
+
+    @SerializedNames({ "start", "values" })
+    public static <T> PagedResponse<T> create(Integer start, List<T> values) {
+        return new PagedResponse<>(values, start);
+    }
+
 }

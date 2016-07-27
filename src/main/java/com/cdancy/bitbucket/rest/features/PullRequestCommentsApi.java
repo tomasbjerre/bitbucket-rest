@@ -25,6 +25,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.jclouds.rest.annotations.BinderParam;
@@ -34,34 +35,50 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import se.bjurr.jmib.anotations.GenerateMethodInvocationBuilder;
 
-import com.cdancy.bitbucket.rest.domain.project.Project;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
+import com.cdancy.bitbucket.rest.domain.PagedResponse;
+import com.cdancy.bitbucket.rest.domain.pullrequest.comments.PullRequestComment;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestCommentsOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
-import com.cdancy.bitbucket.rest.options.CreateProject;
+import com.cdancy.bitbucket.rest.options.CreatePullRequestComment;
 
 @GenerateMethodInvocationBuilder
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
-@Path("/rest/api/{jclouds.api-version}/projects")
-public interface ProjectApi {
+@Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
+public interface PullRequestCommentsApi {
 
-    @Named("project:create")
+    @Named("pull-request-comments:get")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Fallback(BitbucketFallbacks.ProjectOnError.class)
-    @POST
-    Project create(@BinderParam(BindToJsonPayload.class) CreateProject createProject);
-
-    @Named("project:get")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}")
-    @Fallback(BitbucketFallbacks.ProjectOnError.class)
+    @Path("/")
+    @Fallback(PullRequestCommentsOnError.class)
     @GET
-    Project get(@PathParam("project") String project);
+    PagedResponse<PullRequestComment> get(
+            @PathParam("project") String project,
+            @PathParam("repo") String repo,
+            @PathParam("pullRequestId") int pullRequestId,
+            @QueryParam("path") String path,
+            @QueryParam("start") Integer start,
+            @QueryParam("limit") Integer limit);
 
-    @Named("project:delete")
+    @Named("pull-request-comments:post")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Path("/")
+    @Fallback(PullRequestCommentsOnError.class)
+    @POST
+    PullRequestComment post(
+            @PathParam("project") String project,
+            @PathParam("repo") String repo,
+            @PathParam("pullRequestId") int pullRequestId,
+            @BinderParam(BindToJsonPayload.class) CreatePullRequestComment createPullRequestComment);
+
+    @Named("pull-request-comments:delete")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/")
+    @Fallback(PullRequestCommentsOnError.class)
     @DELETE
-    boolean delete(@PathParam("project") String project);
+    void delete(
+            @PathParam("project") String project,
+            @PathParam("repo") String repo,
+            @PathParam("pullRequestId") int pullRequestId,
+            @QueryParam("version") Integer version);
 }

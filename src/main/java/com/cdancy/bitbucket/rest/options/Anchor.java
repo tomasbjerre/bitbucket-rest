@@ -15,31 +15,28 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.features;
+package com.cdancy.bitbucket.rest.options;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import org.jclouds.json.SerializedNames;
 
-import org.jclouds.rest.annotations.RequestFilters;
+import com.google.auto.value.AutoValue;
 
-import se.bjurr.jmib.anotations.GenerateMethodInvocationBuilder;
+@AutoValue
+public abstract class Anchor {
+    Anchor() {
+    }
 
-import com.cdancy.bitbucket.rest.domain.system.Version;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+    public abstract int line();
 
-@GenerateMethodInvocationBuilder
-@Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
-@Path("/rest/api/{jclouds.api-version}")
-public interface SystemApi {
+    public abstract LineType lineType();
 
-    @Named("system:version")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/application-properties")
-    @GET
-    Version version();
+    public abstract FileType fileType();
+
+    public abstract String path();
+
+    @SerializedNames({ "line", "lineType", "fileType", "path" })
+    public static AutoValue_Anchor create(int line, LineType lineType,
+            FileType fileType, String path) {
+        return new AutoValue_Anchor(line, lineType, fileType, path);
+    }
 }

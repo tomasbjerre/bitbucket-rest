@@ -15,26 +15,33 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.branch;
+package com.cdancy.bitbucket.rest.domain.pullrequest.comments;
 
 import org.jclouds.json.SerializedNames;
 
+import com.cdancy.bitbucket.rest.options.FileType;
+import com.cdancy.bitbucket.rest.options.LineType;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Type {
-
-    public abstract String id();
-
-    public abstract String displayName();
-
-    public abstract String prefix();
-
-    Type() {
+public abstract class Anchor {
+    Anchor() {
     }
 
-    @SerializedNames({ "id", "displayName", "prefix" })
-    public static Type create(String id, String displayName, String prefix) {
-        return new AutoValue_Type(id, displayName, prefix);
+    public abstract String fromHash();
+
+    public abstract String toHash();
+
+    public abstract Integer line();
+
+    public abstract LineType lineType();
+
+    public abstract FileType fileType();
+
+    public abstract String path();
+
+    @SerializedNames({ "fromHash", "toHash", "line", "lineType", "fileType", "path" })
+    public static Anchor create(String fromHash, String toHash, Integer line, LineType lineType, FileType fileType, String path) {
+        return new AutoValue_Anchor(fromHash, toHash, line, lineType, fileType, path);
     }
 }

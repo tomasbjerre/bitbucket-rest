@@ -15,26 +15,35 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.branch;
+package com.cdancy.bitbucket.rest.domain;
 
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Type {
+public abstract class User {
 
-    public abstract String id();
+    public abstract String name();
+
+    public abstract String emailAddress();
+
+    public abstract int id();
 
     public abstract String displayName();
 
-    public abstract String prefix();
+    public abstract boolean active();
 
-    Type() {
+    public abstract String slug();
+
+    public abstract String type();
+
+    User() {
     }
 
-    @SerializedNames({ "id", "displayName", "prefix" })
-    public static Type create(String id, String displayName, String prefix) {
-        return new AutoValue_Type(id, displayName, prefix);
+    @SerializedNames({ "name", "emailAddress", "id", "displayName", "active", "slug", "type" })
+    public static User create(String name, String emailAddress, int id,
+                              String displayName, boolean active, String slug, String type) {
+        return new AutoValue_User(name, emailAddress, id, displayName, active, slug, type);
     }
 }

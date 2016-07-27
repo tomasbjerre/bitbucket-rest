@@ -15,31 +15,8 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.features;
+package com.cdancy.bitbucket.rest.options;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import org.jclouds.rest.annotations.RequestFilters;
-
-import se.bjurr.jmib.anotations.GenerateMethodInvocationBuilder;
-
-import com.cdancy.bitbucket.rest.domain.system.Version;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
-
-@GenerateMethodInvocationBuilder
-@Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
-@Path("/rest/api/{jclouds.api-version}")
-public interface SystemApi {
-
-    @Named("system:version")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/application-properties")
-    @GET
-    Version version();
+public enum LineType {
+    ADDED, REMOVED, CONTEXT
 }

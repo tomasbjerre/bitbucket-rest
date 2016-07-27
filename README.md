@@ -13,11 +13,25 @@ java client, based on jclouds, to interact with Bitbucket's REST API.
 Client's can be built like so:
 
       BitbucketClient client = new BitbucketClient.Builder()
-      .endPoint("http://127.0.0.1:7990") // Optional. Defaults to http://127.0.0.1:7990
-      .credentials("admin:password") // Optional.
-      .build();
+       .endPoint("http://127.0.0.1:7990") // Optional. Defaults to http://127.0.0.1:7990
+       .credentials("admin:password") // Optional.
+       .build();
 
       Version version = client.api().systemApi().version();
+
+There are [invocations builders](https://github.com/tomasbjerre/java-method-invocation-builder) available that can optionally be used for cleaner client code. These 2 alternatives are equivalent.
+
+      PagedResponse<PullRequestComment> actualResponse = api
+       .pullRequestCommentsApi().get("PROJECT_1", "rep_1", 1, "basic_branching/file.txt", 0, 10);
+
+      PagedResponse<PullRequestComment> actualResponse = PullRequestCommentsApiGetBuilder.get()
+       .withProject("PROJECT_1")
+       .withRepo("rep_1")
+       .withPullRequestId(1)
+       .withPath("basic_branching/file.txt")
+       .withStart(0)
+       .withLimit(10)
+       .invoke(api.pullRequestCommentsApi());
       
 Being built on top of jclouds means things are broken up into [Apis](https://github.com/cdancy/bitbucket-rest/tree/master/src/main/java/com/cdancy/bitbucket/rest/features). 
 `Apis` are just Interfaces that are analagous to a resource provided by the server-side program (e.g. /api/branches, /api/pullrequest, /api/commits, etc..). 

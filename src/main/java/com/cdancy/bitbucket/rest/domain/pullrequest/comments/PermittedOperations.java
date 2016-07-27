@@ -15,31 +15,24 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.features;
+package com.cdancy.bitbucket.rest.domain.pullrequest.comments;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import org.jclouds.json.SerializedNames;
 
-import org.jclouds.rest.annotations.RequestFilters;
+import com.google.auto.value.AutoValue;
 
-import se.bjurr.jmib.anotations.GenerateMethodInvocationBuilder;
+@AutoValue
+public abstract class PermittedOperations {
+    PermittedOperations() {
+    }
 
-import com.cdancy.bitbucket.rest.domain.system.Version;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+    public abstract boolean editable();
 
-@GenerateMethodInvocationBuilder
-@Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
-@Path("/rest/api/{jclouds.api-version}")
-public interface SystemApi {
+    public abstract boolean deleteable();
 
-    @Named("system:version")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/application-properties")
-    @GET
-    Version version();
+    @SerializedNames({ "editable", "deleteable" })
+    public static PermittedOperations create(boolean editable,
+            boolean deleteable) {
+        return new AutoValue_PermittedOperations(editable, deleteable);
+    }
 }

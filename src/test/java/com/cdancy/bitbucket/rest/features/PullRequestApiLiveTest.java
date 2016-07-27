@@ -17,20 +17,20 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
-import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
-import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
-
-import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 
 @Test(groups = "live", testName = "PullRequestApiLiveTest", singleThreaded = true)
 public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -52,7 +52,16 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
         PullRequest pr = api().create(project, repo, cpr);
         assertNotNull(pr);
+
+        assertThat(pr.errors()).isEmpty();
+
+        assertNotNull(pr.fromRef());
+        assertNotNull(pr.fromRef().repository());
+        assertNotNull(pr.fromRef().repository().project());
+        assertNotNull(pr.fromRef().repository().project().key());
         assertTrue(pr.fromRef().repository().project().key().equals(project));
+
+        assertNotNull(pr.fromRef().repository().slug());
         assertTrue(pr.fromRef().repository().slug().equals(repo));
         prId = pr.id();
         version = pr.version();
