@@ -34,6 +34,8 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import se.bjurr.jmib.anotations.GenerateMethodInvocationBuilder;
 
+import com.cdancy.bitbucket.rest.domain.Change;
+import com.cdancy.bitbucket.rest.domain.PagedResponse;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
@@ -103,4 +105,13 @@ public interface PullRequestApi {
                        @PathParam("repo") String repo,
                        @PathParam("pullRequestId") int pullRequestId,
                        @QueryParam("version") int version);
+
+    @Named("pull-request:changes")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/changes")
+    @Fallback(PullRequestOnError.class)
+    @GET
+    PagedResponse<Change> changes(@PathParam("project") String project,
+                       @PathParam("repo") String repo,
+                       @PathParam("pullRequestId") int pullRequestId);
 }

@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
@@ -25,6 +26,8 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.Change;
+import com.cdancy.bitbucket.rest.domain.PagedResponse;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
@@ -215,6 +218,35 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertTrue(pr.errors().get(0).exceptionName().endsWith("NoSuchPullRequestException"));
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestChanges() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-changes.json"))
+                .setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        try {
+            PagedResponse<Change> actualChanges = PullRequestApiChangesBuilder
+                    .changes()
+                    .withProject("PRJ")
+                    .withRepo("my-repo")
+                    .withPullRequestId(101)
+                    .invoke(baseApi.pullRequestApi());
+
+
+            assertThat(actualChanges.getValues())
+                .hasSize(1);
+
+            assertThat(actualChanges.getValues().get(0).path().toString())
+                .isEqualTo("basic_branching/file.txt");
+
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/changes");
         } finally {
             baseApi.close();
             server.shutdown();
